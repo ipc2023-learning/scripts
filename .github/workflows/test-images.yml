@@ -1,0 +1,22 @@
+name: Test images
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        apt-get update
+        apt-get install -y software-properties-common
+        add-apt-repository -y ppa:apptainer/ppa
+        apt-get update
+        apt-get install -y apptainer
+
+    - name: Build images
+      run: |
+        ./build-all-images.sh
