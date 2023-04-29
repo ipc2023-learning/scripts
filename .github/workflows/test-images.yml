@@ -24,7 +24,8 @@ jobs:
             apptainer build ${name}.sif ${recipe}
         done
 
-    - uses: actions/upload-artifact@v3
-      with:
-        name: images
-        path: *.sif
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+        with:
+          name: images
+          path: *.sif
