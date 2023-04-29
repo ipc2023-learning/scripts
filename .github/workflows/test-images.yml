@@ -19,6 +19,7 @@ jobs:
 
     - name: Build images
       run: |
-        pwd
-        find .
-        ./build-all-images.sh
+        for recipe in Apptainer.* ; do
+            name="${recipe##*.}"
+            apptainer build ${name}.sif ${recipe}
+        done
