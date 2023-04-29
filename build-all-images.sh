@@ -2,14 +2,14 @@
 
 set -euo pipefail
 
-cd $(dirname "$0")
+prefix=Apptainer.
+for recipe in $prefix* ; do
+    name="${recipe#$prefix}".sif
 
-OUTDIR=.
-mkdir -p ${OUTDIR}
-
-for recipe in Apptainer.* ; do
-    name="${recipe##*.}"
-    apptainer build ${OUTDIR}/${name}.sif ${recipe}
+    if [ -f "$name" ]; then
+        echo "Image $name already exists"
+    else
+        echo "Image $name does not exist --> building it now"
+        apptainer build ${name} ${recipe}
+    fi
 done
-
-echo "Finished building images"
