@@ -19,7 +19,10 @@ jobs:
 
     - name: Build images
       run: |
-        for recipe in Apptainer.* ; do apptainer build "${recipe##*.}".sif ${recipe}; done
+        for recipe in Apptainer.* ; do
+            name="${recipe##*.}"
+            apptainer build ${name}.sif ${recipe}
+        done
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
