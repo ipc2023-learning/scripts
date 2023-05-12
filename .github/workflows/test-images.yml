@@ -7,6 +7,17 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+    - name: Maximize build space
+        uses: easimon/maximize-build-space@v7
+        with:
+          root-reserve-mb: 1024
+          swap-size-mb: 1024
+          remove-android: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+
     - uses: actions/checkout@v3
 
     - name: Install dependencies
@@ -19,9 +30,13 @@ jobs:
 
     - name: Build images
       run: |
-        for recipe in Apptainer.* ; do
-            name="${recipe##*.}"
-            apptainer build ${name}.sif ${recipe}
+        echo "Free space:"
+        df -h
+        prefix=Apptainer.
+        for recipe in $prefix* ; do
+            name="${recipe#$prefix}".sif
+            apptainer build ${name} ${recipe}
+            rm ${name}
         done
 
     # Disabled since we can only store 500 MB.
