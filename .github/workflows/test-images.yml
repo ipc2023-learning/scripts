@@ -8,15 +8,15 @@ jobs:
 
     steps:
     - name: Maximize build space
-        uses: easimon/maximize-build-space@v7
-        with:
-          root-reserve-mb: 1024
-          swap-size-mb: 1024
-          remove-android: 'true'
-          remove-codeql: 'true'
-          remove-docker-images: 'true'
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
+      uses: easimon/maximize-build-space@v7
+      with:
+        root-reserve-mb: 1024
+        swap-size-mb: 1024
+        remove-android: 'true'
+        remove-codeql: 'true'
+        remove-docker-images: 'true'
+        remove-dotnet: 'true'
+        remove-haskell: 'true'
 
     - uses: actions/checkout@v3
 
