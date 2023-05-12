@@ -7,15 +7,6 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Maximize build space
-      uses: easimon/maximize-build-space@v7
-      with:
-        remove-android: 'true'
-        remove-codeql: 'true'
-        remove-docker-images: 'true'
-        remove-dotnet: 'true'
-        remove-haskell: 'true'
-
     - uses: actions/checkout@v3
 
     - name: Install dependencies
@@ -26,10 +17,19 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y apptainer
 
+    - name: Free space
+      run: |
+        echo "Free space before:"
+        df -h
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /opt/ghc
+        sudo rm -rf "/usr/local/share/boost"
+        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+        echo "Free space after:"
+        df -h
+
     - name: Build images
       run: |
-        echo "Free space:"
-        df -h
         prefix=Apptainer.
         for recipe in $prefix* ; do
             name="${recipe#$prefix}".sif
