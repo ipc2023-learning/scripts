@@ -24,8 +24,9 @@ jobs:
             apptainer build ${name}.sif ${recipe}
         done
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: images
-        path: "*.sif"
+    # Disabled since we can only store 500 MB.
+    #- name: Upload artifacts
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: images
+    #    path: "*.sif"
