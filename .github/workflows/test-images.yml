@@ -7,6 +7,20 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+    - name: Free Disk Space
+      uses: jlumbroso/free-disk-space@v1.2.0
+      with:
+        # This might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB.
+        tool-cache: true
+
+        # All of these default to true.
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: false  # deletion is slow
+        swap-storage: true
+
     - uses: actions/checkout@v3
 
     - name: Install dependencies
@@ -19,13 +33,7 @@ jobs:
 
     - name: Free space
       run: |
-        echo "Free space before:"
-        df -h
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /opt/ghc
-        sudo rm -rf "/usr/local/share/boost"
-        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-        echo "Free space after:"
+        echo "Free space"
         df -h
 
     - name: Build images
