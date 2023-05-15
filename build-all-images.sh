@@ -10,6 +10,6 @@ for recipe in $prefix* ; do
         echo "Image $name already exists"
     else
         echo "Image $name does not exist --> building it now"
-        apptainer build ${name} ${recipe}
+        time apptainer build ${name} ${recipe}
     fi
 done
