@@ -10,6 +10,8 @@ fi
 
 # Define the list of directories
 directories=(
+    "baseline01"
+    "baseline02"
     "repo01"
     "repo02"
     "repo03"
