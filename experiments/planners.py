@@ -79,7 +79,7 @@ class IPCPlanner:
 
 SINGLE_CORE_LEARNERS = [
     "baseline01/downward_smac.learn.sif",
-    #"baseline02/pgp.learn.sif",
+    "baseline02/pgp.learn.sif",
     "repo01/huzar.learn.sif",
     "repo02/ngpnum.learn.sif",
     "repo02/ngpstrips.learn.sif",
@@ -90,7 +90,7 @@ SINGLE_CORE_LEARNERS = [
 
 MULTI_CORE_LEARNERS = [
     "repo03/gofai.multicore.learn.sif",
-    "repo09/muninn-10h.learn.sif",
+    "repo09/muninn_10h.learn.sif",
     #"repo09/muninn.learn.sif",
 ]
 
@@ -112,6 +112,10 @@ MULTI_CORE_PLANNERS = [
 def get_learners(track=None):
     paths = SINGLE_CORE_LEARNERS if track == tracks.SINGLE_CORE else MULTI_CORE_LEARNERS
     return [IPCPlanner(IPC_DIR / path) for path in paths]
+
+
+def get_all_learners():
+    return get_learners(tracks.SINGLE_CORE) + get_learners(tracks.MULTI_CORE)
 
 
 def get_participating(track=None):

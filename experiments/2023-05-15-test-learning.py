@@ -27,7 +27,7 @@ else:
     MEMORY_LIMIT = 16 * 1024  # MiB
 
 exp = learning_experiment.LearningExperiment(track=TRACK, time_limit=TIME_LIMIT, memory_limit=MEMORY_LIMIT, environment=ENVIRONMENT)
-exp.add_planners(planners.get_learners(TRACK))
+exp.add_planners(planners.get_all_learners())
 for domain, domain_dir in benchmarks.get_benchmarks(TESTRUN):
     exp.add_domain(domain, domain_dir)
 
