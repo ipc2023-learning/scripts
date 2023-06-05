@@ -46,7 +46,7 @@ class LearningRun(Run):
                 "{domain}",
             ] + [f"{{{task_name}}}" for task_name in task_names]
         )
-        self.add_command("filter-stderr", [sys.executable, "{filter_stderr}"])
+        #self.add_command("filter-stderr", [sys.executable, "{filter_stderr}"])
 
         self.set_property("algorithm", planner.shortname)
         self.set_property("planner_path", str(planner.image_path))
@@ -75,7 +75,7 @@ class LearningExperiment(Experiment):
         self.add_parser(DIR / "learning-parser.py")
         self.add_parser(DIR / "runsolver-parser.py")
         self.add_resource("run_apptainer", DIR / "run-apptainer.sh")
-        self.add_resource("filter_stderr", DIR / "filter-stderr.py")
+        #self.add_resource("filter_stderr", DIR / "filter-stderr.py")
 
     def add_domain(self, domain, domain_dir):
         if domain in self._tasks:

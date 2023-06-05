@@ -29,7 +29,7 @@ def add_score(run):
             score = best_upper_bound / run["cost"]
         elif track == tracks.AGL:
             time_limit = run["time_limit"]
-            time = run["total_cpu_time"]
+            time = run["cpu_time"]
             if time <= 1:
                 score = 1
             else:
@@ -41,7 +41,7 @@ def add_score(run):
 class IPCPlanningReport(AbsoluteReport):
     DEFAULT_ATTRIBUTES = ["coverage", "cost", "costs", "planner_exit_code", "planner_wall_clock_time",
                           "score", "error", "run_dir", "has_suboptimal_plan", "has_invalid_plans",
-                          "total_cpu_time", "total_virtual_memory", "total_wall_clock_time"]
+                          "cpu_time", "virtual_memory", "wall_clock_time"]
     def __init__(self, **kwargs):
         filters = make_list(kwargs.get("filter", []))
         filters.append(add_score)
@@ -51,7 +51,7 @@ class IPCPlanningReport(AbsoluteReport):
 
 class IPCLearningReport(AbsoluteReport):
     DEFAULT_ATTRIBUTES = ["apptainer_exit_code", "apptainer_wall_clock_time",
-                          "error", "run_dir", "total_cpu_time",
-                          "total_virtual_memory", "total_memory", "total_wall_clock_time",
+                          "error", "run_dir", "cpu_time",
+                          "virtual_memory", "memory", "wall_clock_time",
                           "coverage", "dk_files"]
     INFO_ATTRIBUTES = []
