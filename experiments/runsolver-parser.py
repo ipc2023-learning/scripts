@@ -63,14 +63,6 @@ def main():
         file="driver.log",
         required=True,
     )
-    parser.add_pattern(
-        "time_limit",
-        r"Enforcing CPUTime limit \(soft limit, will send "
-        r"SIGTERM then SIGKILL\): (\d+) seconds",
-        type=int,
-        file="watch.log",
-        required=True,
-    )
     # Includes solver and all child processes.
     parser.add_pattern(
         "total_cpu_time", r"CPUTIME=(.+)", type=float, file="values.log", required=True
@@ -80,6 +72,9 @@ def main():
     )
     parser.add_pattern(
         "total_virtual_memory", r"MAXVM=(\d+)", type=int, file="values.log", required=True
+    )
+    parser.add_pattern(
+        "total_memory", r"MAXMM=(\d+)", type=int, file="values.log", required=True
     )
     parser.add_function(set_outcome, file="values.log")
     parser.parse()

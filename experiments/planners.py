@@ -10,6 +10,7 @@ import tracks
 DIR = Path(__file__).resolve().parent
 REPO = DIR.parent
 IPC_DIR = REPO.parent
+IMAGES_DIR = IPC_DIR / "images"
 
 class IPCPlanner:
     MAIN_LABELS = ["Name", "Description", "Authors", "License", "Tracks"]
@@ -27,7 +28,7 @@ class IPCPlanner:
     def __init__(self, image_path):
         self.image_path = Path(image_path)
         self.shortname = self.image_path.stem.replace(".", "_")
-        assert self.image_path.exists()
+        assert self.image_path.exists(), self.image_path
         self._read_labels()
 
     def _read_labels(self):
@@ -78,40 +79,40 @@ class IPCPlanner:
                 self.warnings.append(f"Answer to support question unclear '{label}: {answer}'")
 
 SINGLE_CORE_LEARNERS = [
-    "baseline01/downward_smac.learn.sif",
-    "baseline02/pgp.learn.sif",
-    "repo01/huzar.learn.sif",
-    "repo02/ngpnum.learn.sif",
-    "repo02/ngpstrips.learn.sif",
-    "repo03/gofai.learn.sif",
-    "repo05/asnets.learn.sif",
-    "repo08/h_policy.learn.sif",
+    "downward_smac.learn.sif",
+    "pgp.learn.sif",
+    "huzar.learn.sif",
+    "ngpnum.learn.sif",
+    "ngpstrips.learn.sif",
+    "gofai.learn.sif",
+    "asnets.learn.sif",
+    "h_policy.learn.sif",
 ]
 
 MULTI_CORE_LEARNERS = [
-    "repo03/gofai.multicore.learn.sif",
-    "repo09/muninn_10h.learn.sif",
-    #"repo09/muninn.learn.sif",
+    "gofai.multicore.learn.sif",
+    "muninn_10h.learn.sif",
+    #"muninn.learn.sif",
 ]
 
 SINGLE_CORE_PLANNERS = [
-    "repo01/huzar.plan.sif",
-    "repo02/ngpnum.plan.sif",
-    "repo02/ngpstrips.plan.sif",
-    "repo03/gofai.plan.sif",
-    "repo05/asnets.plan.sif",
-    "repo08/h_policy.plan.sif",
+    "huzar.plan.sif",
+    "ngpnum.plan.sif",
+    "ngpstrips.plan.sif",
+    "gofai.plan.sif",
+    "asnets.plan.sif",
+    "h_policy.plan.sif",
 ]
 
 MULTI_CORE_PLANNERS = [
-    "repo03/gofai.plan.sif",
-    "repo09/muninn.plan.sif",
+    "gofai.plan.sif",
+    "muninn.plan.sif",
 ]
 
 
 def get_learners(track=None):
     paths = SINGLE_CORE_LEARNERS if track == tracks.SINGLE_CORE else MULTI_CORE_LEARNERS
-    return [IPCPlanner(IPC_DIR / path) for path in paths]
+    return [IPCPlanner(IMAGES_DIR / path) for path in paths]
 
 
 def get_all_learners():

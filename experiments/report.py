@@ -50,11 +50,8 @@ class IPCPlanningReport(AbsoluteReport):
 
 
 class IPCLearningReport(AbsoluteReport):
-    DEFAULT_ATTRIBUTES = ["coverage", "cost", "costs", "planner_exit_code", "planner_wall_clock_time",
-                          "score", "error", "run_dir", "has_suboptimal_plan", "has_invalid_plans",
-                          "total_cpu_time", "total_virtual_memory", "total_wall_clock_time"]
-    def __init__(self, **kwargs):
-        filters = make_list(kwargs.get("filter", []))
-        filters.append(add_score)
-        kwargs["filter"] = filters
-        super().__init__(**kwargs)
+    DEFAULT_ATTRIBUTES = ["apptainer_exit_code", "apptainer_wall_clock_time",
+                          "error", "run_dir", "total_cpu_time",
+                          "total_virtual_memory", "total_memory", "total_wall_clock_time",
+                          "coverage", "dk_files"]
+    INFO_ATTRIBUTES = []

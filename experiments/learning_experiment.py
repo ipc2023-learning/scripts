@@ -18,6 +18,23 @@ class LearningRun(Run):
             task_name = Path(task.problem).stem
             task_names.append(task_name)
             self.add_resource(task_name, task.problem_file)
+
+        #[
+        #    "runsolver",
+        #    "-C", str(time_limit),
+        #    "--delay", "60",
+        #    "-w", "watch.log",
+        #    "-v", "values.log",
+        #    "apptainer", "run",
+        #    "--memory", f"{memory_limit}M",
+        #    "--memory-swap", f"{memory_limit}M",
+        #    #"-C",
+        #    "--no-home",
+        #    f"{{{planner.shortname}}}",
+        #    "dk",
+        #    "{domain}",
+        #]
+
         self.add_command(
             "run-apptainer",
             [
@@ -34,7 +51,8 @@ class LearningRun(Run):
         self.set_property("algorithm", planner.shortname)
         self.set_property("planner_path", str(planner.image_path))
         self.set_property("domain", domain)
-        self.set_property("problems", ", ".join(task.problem for task in tasks))
+        self.set_property("problem", "tasks")  # dummy problem name for AbsoluteReport
+        self.set_property("tasks", ", ".join(task.problem for task in tasks))
         self.set_property("id", [planner.shortname, domain])
         self.set_property("experiment_name", self.experiment.name)
         self.set_property("track", experiment.track)

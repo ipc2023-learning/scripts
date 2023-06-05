@@ -6,11 +6,13 @@ BENCHMARK_DIR = REPO / "../example-tasks/"
 
 
 def get_benchmarks(test_run):
-    # TODO: use correct domains for each track (use full domains normally and only one problem per domain if test_run is true).
     benchmarks = [
         ("gripper", BENCHMARK_DIR / "gripper/training/easy"),
-        ("visitall", BENCHMARK_DIR / "visitall/training/easy"),
     ]
+    if not test_run:
+        benchmarks.extend([
+        ("visitall", BENCHMARK_DIR / "visitall/training/easy"),
+    ])
     return benchmarks
 
 

@@ -92,6 +92,10 @@ def add_scp_step(exp, login, repos_dir):
     )
 
 
+def add_collect_logs_step(exp):
+    exp.add_step("collect-logs", subprocess.check_call, ["./sort-logs.py", exp.path, DIR / "../../logs/"])
+
+
 def fetch_algorithm(exp, expname, algo, *, new_algo=None):
     """Fetch (and possibly rename) a single algorithm from *expname*."""
     new_algo = new_algo or algo
