@@ -4,12 +4,12 @@ set -euo pipefail
 
 prefix=Apptainer.
 for recipe in $prefix* ; do
-    name="${recipe#$prefix}".sif
+    dest="../images/${recipe#$prefix}".sif
 
-    if [ -f "$name" ]; then
-        echo "Image $name already exists"
+    if [ -f "$dest" ]; then
+        echo "Image $dest already exists"
     else
-        echo "Image $name does not exist --> building it now"
-        time apptainer build ${name} ${recipe}
+        echo "Image $dest does not exist --> building it now"
+        time apptainer build ${dest} ${recipe}
     fi
 done
