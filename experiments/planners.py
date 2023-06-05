@@ -5,12 +5,14 @@ from pathlib import Path
 import re
 from subprocess import check_output
 
+import project
 import tracks
 
 DIR = Path(__file__).resolve().parent
 REPO = DIR.parent
 IPC_DIR = REPO.parent
 IMAGES_DIR = IPC_DIR / "images"
+HAS_APPTAINER = not project.running_on_cluster()
 
 class IPCPlanner:
     MAIN_LABELS = ["Name", "Description", "Authors", "License", "Tracks"]
@@ -29,7 +31,8 @@ class IPCPlanner:
         self.image_path = Path(image_path)
         self.shortname = self.image_path.stem.replace(".", "_")
         assert self.image_path.exists(), self.image_path
-        self._read_labels()
+        if HAS_APPTAINER:
+            self._read_labels()
 
     def _read_labels(self):
         output = check_output(["apptainer", "inspect", "--labels", "--json", str(self.image_path)])

@@ -19,7 +19,7 @@ if learning_experiment.running_on_cluster():
         email="jendrik.seipp@liu.se",
         memory_per_cpu="91G",
         cpus_per_task=1,
-        time_limit_per_task=f"{TIME_LIMIT + 1}:00:00",  # 10 planners * 10 domains = 100 runs, so only one run per Slurm task.
+        time_limit_per_task="11:00:00",  # 10 planners * 10 domains = 100 runs, so only one run per Slurm task.
         export=["PATH"],
     )
 else:
