@@ -21,8 +21,10 @@ def parse_dk_files(content, props):
             f"Error: the following files don't match the {DK_REGEX} regex:"
             f" {set(all_files_with_dk_prefix) - set(numbered_dk_files)}", file=sys.stderr)
         dk_file = None
-    else:
+    elif numbered_dk_files:
         dk_file = tools.natural_sort(numbered_dk_files)[-1]
+    else:
+        dk_file = None
 
     props["all_files_with_dk_prefix"] = all_files_with_dk_prefix
     props["dk_file"] = dk_file
