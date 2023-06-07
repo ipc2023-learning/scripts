@@ -1,11 +1,13 @@
 import logging
 from pathlib import Path
-import sys
+import shutil
+import subprocess
 
 from downward import suites
 from lab.experiment import Experiment, Run
 
-from project import DIR, running_on_cluster
+import project
+import report
 
 
 class LearningRun(Run):
@@ -72,10 +74,17 @@ class LearningExperiment(Experiment):
         self.add_step("build", self.build)
         self.add_step("start", self.start_runs)
         self.add_fetcher(name="fetch")
-        self.add_parser(DIR / "learning-parser.py")
-        self.add_parser(DIR / "runsolver-parser.py")
-        self.add_resource("run_apptainer", DIR / "run-apptainer.sh")
-        #self.add_resource("filter_stderr", DIR / "filter-stderr.py")
+        if not project.running_on_cluster():
+            self.add_step("remove-eval-dir", shutil.rmtree, self.eval_dir, ignore_errors=True)
+            project.add_scp_step(self, "nsc", "/proj/dfsplan/users/x_jense/ipc2023-learning")
+        reportfile = Path(self.eval_dir) / f"{self.name}.html"
+        self.add_report(report.IPCLearningReport(attributes=report.IPCLearningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
+        self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
+
+        self.add_parser(project.DIR / "learning-parser.py")
+        self.add_parser(project.DIR / "runsolver-parser.py")
+        self.add_resource("run_apptainer", project.DIR / "run-apptainer.sh")
+        #self.add_resource("filter_stderr", project.DIR / "filter-stderr.py")
 
     def add_domain(self, domain, domain_dir):
         if domain in self._tasks:

@@ -7,8 +7,11 @@ from lab import tools
 
 
 def parse_dk_files(content, props):
-    props["dk_files"] = tools.natural_sort(Path(".").glob("dk*"))
+    props["all_files"] = tools.natural_sort(Path(".").iterdir())
+    props["dk_files"] = tools.natural_sort(Path(".").glob("dk.[0-9]*"))
     props["coverage"] = int(len(props["dk_files"]) > 0)
+    if props["dk_files"]:
+        props["dk_file"] = props["dk_files"][-1]
 
 
 def main():
