@@ -53,5 +53,5 @@ class IPCLearningReport(AbsoluteReport):
     DEFAULT_ATTRIBUTES = ["apptainer_exit_code", "apptainer_wall_clock_time",
                           "error", "run_dir", "cpu_time",
                           "virtual_memory", "memory", "wall_clock_time",
-                          "coverage", "dk_files"]
+                          "coverage", "all_files_with_dk_prefix", "dk_file"]
     INFO_ATTRIBUTES = []
