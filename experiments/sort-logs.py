@@ -15,7 +15,7 @@ def sort_run_dir(run_dir, logs_dir):
     experiment = props["experiment_name"]
     target = logs_dir/f"{algorithm}"/experiment/run_dir.parent.name/run_dir.name
     target.mkdir(parents=True, exist_ok=True)
-    uncompressed_files = ["properties", "static-properties", "driver.log", "run", "run.err", "run.log", "values.log", "watch.log"]
+    uncompressed_files = {"properties", "static-properties", "driver.log", "run", "run.err", "run.log", "values.log", "watch.log"}
     compressed_files = []
     for f in run_dir.glob("*"):
         if f.name not in uncompressed_files:
@@ -24,7 +24,8 @@ def sort_run_dir(run_dir, logs_dir):
     tar_cmd = ["tar", "-czf", str(tar_filename)] + [f.name for f in compressed_files]
     check_call(tar_cmd, cwd=run_dir)
     for path in uncompressed_files:
-        shutil.copy2(run_dir / path, target)
+        if (run_dir / path).exists():
+            shutil.copy2(run_dir / path, target)
 
 
 def sort_experiment(exp_dir, logs_dir):
