@@ -93,9 +93,8 @@ SINGLE_CORE_LEARNERS = [
 ]
 
 MULTI_CORE_LEARNERS = [
-    "gofai.multicore.learn.sif",
-    "muninn_10h.learn.sif",
-    #"muninn.learn.sif",
+    #"gofai.multicore.learn.sif",  # Only use single-core variant since we only use one core.
+    "muninn.learn.sif",
 ]
 
 SINGLE_CORE_PLANNERS = [
