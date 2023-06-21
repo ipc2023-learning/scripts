@@ -10,6 +10,8 @@ from lab.tools import Properties
 def fetch_dk_file(run_dir, dk_dir):
     print(f"Searching for domain knowledge file in {run_dir}")
     props = Properties(str(run_dir / "static-properties"))
+    dynamic_props = Properties(str(run_dir / "properties"))
+    props.update(dynamic_props)
     algorithm = props["algorithm"]
     domain = props["domain"]
     experiment = props["experiment_name"]
