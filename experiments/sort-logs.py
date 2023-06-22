@@ -37,7 +37,7 @@ def sort_run_dir(run_dir, logs_dir):
     experiment = props["experiment_name"]
     target = logs_dir/f"{algorithm}"/experiment/run_dir.parent.name/run_dir.name
     target.mkdir(parents=True, exist_ok=True)
-    uncompressed_files = {"properties", "static-properties", "driver.log", "run", "run.err", "run.log", "values.log", "watch.log"}
+    uncompressed_files = {"properties", "static-properties", "driver.log", "run", "run.err", "run.log", "values.log"}
     compressed_files = []
 
     for root, _, files in os.walk(run_dir):
