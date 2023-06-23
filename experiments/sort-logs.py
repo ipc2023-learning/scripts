@@ -33,10 +33,14 @@ def tar_add_large_files(tar, filepath, arcname):
 def sort_run_dir(run_dir, logs_dir):
     print(f"Fetching data from {run_dir}")
     props = Properties(str(run_dir / "static-properties"))
+    dynamic_props = Properties(str(run_dir / "properties"))
+    props.update(dynamic_props)
     algorithm = props["algorithm"]
     experiment = props["experiment_name"]
-    target = logs_dir/f"{algorithm}"/experiment/run_dir.parent.name/run_dir.name
-    target.mkdir(parents=True, exist_ok=True)
+    target_root_dir = logs_dir / f"{algorithm}" / experiment
+    target_dk_dir = target_root_dir / "domain-knowledge"
+    target_run_dir = target_root_dir / run_dir.parent.name / run_dir.name
+    target_run_dir.mkdir(parents=True, exist_ok=True)
     uncompressed_files = {"properties", "static-properties", "driver.log", "run", "run.err", "run.log", "values.log"}
     compressed_files = []
 
@@ -46,7 +50,7 @@ def sort_run_dir(run_dir, logs_dir):
             if filepath.name not in uncompressed_files:
                 compressed_files.append(filepath)
 
-    tar_filename = target / "other_files.tgz"
+    tar_filename = target_run_dir / "other_files.tgz"
 
     with tarfile.open(tar_filename, 'w:gz') as tar:
         for f in compressed_files:
@@ -56,7 +60,18 @@ def sort_run_dir(run_dir, logs_dir):
 
     for path in uncompressed_files:
         if (run_dir / path).exists():
-            shutil.copy2(run_dir / path, target)
+            shutil.copy2(run_dir / path, target_run_dir)
+
+    # Collect domain knowledge file.
+    dk_file = props.get("dk_file")
+    if dk_file is None:
+        return
+    source = run_dir / dk_file
+    domain = props["domain"]
+    target = target_dk_dir / f"{domain}.dk"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    print(f"Copy {source} to {target}")
+    shutil.copy2(source, target)
 
 
 def sort_experiment(exp_dir, logs_dir):

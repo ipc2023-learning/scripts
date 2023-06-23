@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
+    if: github.repository != 'ipc2023-learning/scripts'
     runs-on: ubuntu-22.04
 
     steps:
