@@ -9,6 +9,8 @@ from lab.experiment import Experiment, Run
 import project
 import report
 
+DIR = project.DIR / "learning"
+
 
 class LearningRun(Run):
     def __init__(self, experiment, planner, tasks, time_limit, memory_limit):
@@ -81,9 +83,9 @@ class LearningExperiment(Experiment):
         self.add_report(report.IPCLearningReport(attributes=report.IPCLearningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
         self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
 
-        self.add_parser(project.DIR / "learning-parser.py")
+        self.add_parser(DIR / "learning-parser.py")
         self.add_parser(project.DIR / "runsolver-parser.py")
-        self.add_resource("run_apptainer", project.DIR / "run-apptainer.sh")
+        self.add_resource("run_apptainer", DIR / "run-apptainer.sh")
 
     def add_domain(self, domain, domain_dir):
         if domain in self._tasks:

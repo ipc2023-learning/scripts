@@ -1,13 +1,17 @@
 import logging
+import math
 from pathlib import Path
 import shutil
 import subprocess
 
+from downward.reports.absolute import AbsoluteReport
 from downward import suites
 from lab.experiment import Experiment, Run
+from lab import tools
 
 import project
-import report
+
+DIR = project.DIR / "planning"
 
 
 class PlanningRun(Run):
@@ -59,12 +63,12 @@ class PlanningExperiment(Experiment):
             self.add_step("remove-eval-dir", shutil.rmtree, self.eval_dir, ignore_errors=True)
             project.add_scp_step(self, "nsc", "/proj/dfsplan/users/x_jense/ipc2023-learning")
         reportfile = Path(self.eval_dir) / f"{self.name}.html"
-        self.add_report(report.IPCPlanningReport(attributes=report.IPCPlanningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
+        self.add_report(IPCPlanningReport(attributes=IPCPlanningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
         self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
-        
-        self.add_parser(project.DIR / "planning-parser.py")
+
+        self.add_parser(DIR / "planning-parser.py")
         self.add_parser(project.DIR / "runsolver-parser.py")
-        self.add_resource("run_apptainer", project.DIR / "run-apptainer.sh")
+        self.add_resource("run_apptainer", DIR / "run-apptainer.sh")
 
     def add_domain(self, domain, domain_dir):
         if domain in self._tasks:
@@ -101,7 +105,47 @@ class PlanningExperiment(Experiment):
 
         for planner in self._planners.values():
             for domain, tasks in sorted(self._tasks.items()):
-                for task in tasks: 
+                for task in tasks:
                     self.add_run(PlanningRun(self, planner, task, self.time_limit, self.memory_limit))
 
         super().build(**kwargs)
+
+
+def add_score(run):
+    score = 0
+    if "coverage" not in run:
+        print(run)
+    if run["coverage"]:
+        track = run["track"]
+        best_lower_bound, best_upper_bound = benchmarks.get_best_bounds(run["domain"], run["problem"])
+        if track == tracks.OPT:
+            assert len(run["costs"]) == 1 and run["costs"][0] == run["cost"]
+            cost = run["cost"]
+            if cost < best_lower_bound or cost > best_upper_bound:
+                run["has_suboptimal_plan"] = 1
+                score = 0
+            else:
+                run["has_suboptimal_plan"] = 0
+                score = 1
+        elif track == tracks.SAT:
+            score = best_upper_bound / run["cost"]
+        elif track == tracks.AGL:
+            time_limit = run["time_limit"]
+            time = run["cpu_time"]
+            if time <= 1:
+                score = 1
+            else:
+                score = 1 - math.log(time) / math.log(time_limit)
+    run["score"] = score
+    return run
+
+
+class IPCPlanningReport(AbsoluteReport):
+    DEFAULT_ATTRIBUTES = ["coverage", "cost", "costs", "planner_exit_code", "planner_wall_clock_time",
+                          "score", "error", "run_dir", "has_suboptimal_plan", "has_invalid_plans",
+                          "cpu_time", "virtual_memory", "wall_clock_time"]
+    def __init__(self, **kwargs):
+        filters = tools.make_list(kwargs.get("filter", []))
+        filters.append(add_score)
+        kwargs["filter"] = filters
+        super().__init__(**kwargs)

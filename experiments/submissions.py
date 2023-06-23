@@ -9,6 +9,7 @@ import project
 import tracks
 
 DIR = Path(__file__).resolve().parent
+EXPERIMENTS_DIR = DIR.parent
 REPO = DIR.parent
 IPC_DIR = REPO.parent
 IMAGES_DIR = IPC_DIR / "images"

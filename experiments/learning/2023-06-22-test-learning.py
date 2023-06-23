@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 
+import sys
+
 from lab.environments import TetralithEnvironment, LocalEnvironment
+
+sys.path.insert(0, "..")
+import project
+import submissions
+import tracks
 
 import benchmarks
 import learning_experiment
-import planners
-import project
-import tracks
 
 TRACK = tracks.SINGLE_CORE
 TIME_LIMIT = 24 * 60 * 60  # seconds
@@ -29,7 +33,7 @@ else:
     MEMORY_LIMIT = 16 * 1024  # MiB
 
 exp = learning_experiment.LearningExperiment(track=TRACK, time_limit=TIME_LIMIT, memory_limit=MEMORY_LIMIT, environment=ENVIRONMENT)
-exp.add_planners(planners.get_all_learners())
+exp.add_planners(submissions.get_all_learners())
 for domain, domain_dir in benchmarks.get_benchmarks(TESTRUN):
     exp.add_domain(domain, domain_dir)
 
