@@ -84,7 +84,6 @@ class LearningExperiment(Experiment):
         self.add_parser(project.DIR / "learning-parser.py")
         self.add_parser(project.DIR / "runsolver-parser.py")
         self.add_resource("run_apptainer", project.DIR / "run-apptainer.sh")
-        #self.add_resource("filter_stderr", project.DIR / "filter-stderr.py")
 
     def add_domain(self, domain, domain_dir):
         if domain in self._tasks:

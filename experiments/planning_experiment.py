@@ -1,14 +1,16 @@
-from collections import defaultdict, OrderedDict
 import logging
 from pathlib import Path
+import shutil
+import subprocess
 
 from downward import suites
 from lab.experiment import Experiment, Run
 
-DIR = Path(__file__).resolve().parent
+import project
+import report
 
 
-class IPCRun(Run):
+class PlanningRun(Run):
     def __init__(self, experiment, planner, task, time_limit, memory_limit):
         super().__init__(experiment)
         self.add_resource(
@@ -44,8 +46,8 @@ class IPCRun(Run):
 class PlanningExperiment(Experiment):
     def __init__(self, track, time_limit, memory_limit, path=None, environment=None):
         super().__init__(path=path, environment=environment)
-        self._suites = defaultdict(list)
-        self._planners = OrderedDict()
+        self._tasks = {}
+        self._planners = {}
         self.track = track
         self.time_limit = time_limit
         self.memory_limit = memory_limit
@@ -53,22 +55,27 @@ class PlanningExperiment(Experiment):
         self.add_step("build", self.build)
         self.add_step("start", self.start_runs)
         self.add_fetcher(name="fetch")
-        self.add_parser(DIR / "planning-parser.py")
-        self.add_resource("run_apptainer", DIR / "run-apptainer.sh")
+        if not project.running_on_cluster():
+            self.add_step("remove-eval-dir", shutil.rmtree, self.eval_dir, ignore_errors=True)
+            project.add_scp_step(self, "nsc", "/proj/dfsplan/users/x_jense/ipc2023-learning")
+        reportfile = Path(self.eval_dir) / f"{self.name}.html"
+        self.add_report(report.IPCPlanningReport(attributes=report.IPCPlanningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
+        self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
+        
+        self.add_parser(project.DIR / "planning-parser.py")
+        self.add_parser(project.DIR / "runsolver-parser.py")
+        self.add_resource("run_apptainer", project.DIR / "run-apptainer.sh")
 
-    def _get_tasks(self):
+    def add_domain(self, domain, domain_dir):
+        if domain in self._tasks:
+            logging.critical(f"Domain {domain} was already added")
+        domain_file = domain_dir / "domain.pddl"
         tasks = []
-        for benchmarks_dir, suite in self._suites.items():
-            tasks.extend(suites.build_suite(str(benchmarks_dir), suite))
-        return tasks
-
-    def add_suite(self, benchmarks_dir, suite):
-        if isinstance(suite, str):
-            suite = [suite]
-        benchmarks_dir = Path(benchmarks_dir).resolve()
-        if not benchmarks_dir.exists():
-            logging.critical(f"Benchmarks directory {str(benchmarks_dir)} not found.")
-        self._suites[benchmarks_dir].extend(suite)
+        for problem_file in sorted(domain_dir.glob("*.pddl")):
+            if problem_file.name == "domain.pddl":
+                continue
+            tasks.append(suites.Problem(domain, problem_file.name, problem_file, domain_file))
+        self._tasks[domain] = tasks
 
     def add_planners(self, planners):
         for planner in planners:
@@ -86,15 +93,15 @@ class PlanningExperiment(Experiment):
 
         # Convert suite to strings (see FastDownwardExperiment.build).
         serialized_suites = {
-            str(benchmarks_dir): [str(problem) for problem in benchmarks]
-            for benchmarks_dir, benchmarks in self._suites.items()
+            str(domain): [str(task) for task in tasks]
+            for domain, tasks in self._tasks.items()
         }
         self.set_property("suite", serialized_suites)
         self.set_property("images", list(self._planners.keys()))
 
-        tasks = self._get_tasks()
         for planner in self._planners.values():
-            for task in tasks:
-                self.add_run(IPCRun(self, planner, task, self.time_limit, self.memory_limit))
+            for domain, tasks in sorted(self._tasks.items()):
+                for task in tasks: 
+                    self.add_run(PlanningRun(self, planner, task, self.time_limit, self.memory_limit))
 
         super().build(**kwargs)
