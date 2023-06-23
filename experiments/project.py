@@ -16,6 +16,7 @@ assert BaselSlurmEnvironment and LocalEnvironment and ScatterPlotReport
 
 
 DIR = Path(__file__).resolve().parent
+REPO = DIR.parent
 
 
 def parse_args():

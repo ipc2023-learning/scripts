@@ -99,6 +99,8 @@ MULTI_CORE_LEARNERS = [
 ]
 
 SINGLE_CORE_PLANNERS = [
+    "downward_smac.plan.sif",
+    "pgp.plan.sif",
     "huzar.plan.sif",
     "ngpnum.plan.sif",
     "ngpstrips.plan.sif",
@@ -108,7 +110,7 @@ SINGLE_CORE_PLANNERS = [
 ]
 
 MULTI_CORE_PLANNERS = [
-    "gofai.plan.sif",
+    #"gofai.plan.sif",
     "muninn.plan.sif",
 ]
 
@@ -120,6 +122,10 @@ def get_learners(track=None):
 
 def get_all_learners():
     return get_learners(tracks.SINGLE_CORE) + get_learners(tracks.MULTI_CORE)
+
+
+def get_all_planners():
+    return [IPCPlanner(IMAGES_DIR / path) for path in SINGLE_CORE_PLANNERS + MULTI_CORE_PLANNERS]
 
 
 def get_participating(track=None):

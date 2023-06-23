@@ -15,8 +15,11 @@ DIR = project.DIR / "planning"
 
 
 class PlanningRun(Run):
-    def __init__(self, experiment, planner, task, time_limit, memory_limit):
+    def __init__(self, experiment, planner, dk_file, task, time_limit, memory_limit):
         super().__init__(experiment)
+        self.add_resource(
+            "domain_knowledge", dk_file, "dk", symlink=False
+        )
         self.add_resource(
             "domain", task.domain_file, "domain.pddl", symlink=False
         )
@@ -28,6 +31,7 @@ class PlanningRun(Run):
             [
                 "{run_apptainer}",
                 f"{{{planner.shortname}}}",
+                "{domain_knowledge}",
                 "{domain}",
                 "{problem}",
                 "sas_plan",
@@ -48,11 +52,13 @@ class PlanningRun(Run):
 
 
 class PlanningExperiment(Experiment):
-    def __init__(self, track, time_limit, memory_limit, path=None, environment=None):
+    def __init__(self, track, logs_dir, time_limit, memory_limit, path=None, environment=None):
         super().__init__(path=path, environment=environment)
         self._tasks = {}
         self._planners = {}
         self.track = track
+        self.logs_dir = logs_dir
+        self.learning_exp_name = self.name.replace("planning", "learning")
         self.time_limit = time_limit
         self.memory_limit = memory_limit
 
@@ -70,15 +76,9 @@ class PlanningExperiment(Experiment):
         self.add_parser(project.DIR / "runsolver-parser.py")
         self.add_resource("run_apptainer", DIR / "run-apptainer.sh")
 
-    def add_domain(self, domain, domain_dir):
+    def add_domain(self, domain, tasks):
         if domain in self._tasks:
             logging.critical(f"Domain {domain} was already added")
-        domain_file = domain_dir / "domain.pddl"
-        tasks = []
-        for problem_file in sorted(domain_dir.glob("*.pddl")):
-            if problem_file.name == "domain.pddl":
-                continue
-            tasks.append(suites.Problem(domain, problem_file.name, problem_file, domain_file))
         self._tasks[domain] = tasks
 
     def add_planners(self, planners):
@@ -105,8 +105,12 @@ class PlanningExperiment(Experiment):
 
         for planner in self._planners.values():
             for domain, tasks in sorted(self._tasks.items()):
+                dk_file = (self.logs_dir / planner.shortname.replace("_plan", "_learn") / self.learning_exp_name / "domain-knowledge" / f"{domain}.dk").resolve()
+                if not dk_file.is_file():
+                    print(f"DK file missing: {dk_file}")
+                    continue
                 for task in tasks:
-                    self.add_run(PlanningRun(self, planner, task, self.time_limit, self.memory_limit))
+                    self.add_run(PlanningRun(self, planner, dk_file, task, self.time_limit, self.memory_limit))
 
         super().build(**kwargs)
 
@@ -146,6 +150,6 @@ class IPCPlanningReport(AbsoluteReport):
                           "cpu_time", "virtual_memory", "wall_clock_time"]
     def __init__(self, **kwargs):
         filters = tools.make_list(kwargs.get("filter", []))
-        filters.append(add_score)
+        #filters.append(add_score)
         kwargs["filter"] = filters
         super().__init__(**kwargs)
