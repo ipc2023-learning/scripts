@@ -1,16 +1,20 @@
 #! /usr/bin/env python
 
 from pathlib import Path
-from subprocess import check_output, CalledProcessError
+import subprocess
+import sys
 
 from lab.parser import Parser
 
 INVALID_PLAN = "invalid"
 
+
 def validate_plan(domain, problem, plan):
     try:
-        validate_output = check_output(["validate", domain, problem, plan]).decode()
-    except CalledProcessError as e:
+        validate_output = subprocess.check_output(
+            ["validate", domain, problem, plan],
+            stderr=subprocess.STDOUT).decode()
+    except subprocess.CalledProcessError as e:
         validate_output = e.output.decode()
     plan_valid = False
     plan_cost = None
@@ -22,7 +26,9 @@ def validate_plan(domain, problem, plan):
     if plan_valid:
         return plan_cost
     else:
+        print(f"Invalid plan: {validate_output}", file=sys.stderr)
         return INVALID_PLAN
+
 
 def parse_plans(content, props):
     props["costs"] = []
