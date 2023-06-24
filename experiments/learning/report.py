@@ -54,4 +54,16 @@ class IPCLearningReport(AbsoluteReport):
                           "error", "run_dir", "cpu_time",
                           "virtual_memory", "memory", "wall_clock_time",
                           "coverage", "all_files_with_dk_prefix", "dk_file"]
+    ERROR_ATTRIBUTES = [
+        "domain",
+        "problem",
+        "algorithm",
+        "unexplained_errors",
+        "error",
+        "cpu_time",
+        "wall_clock_time",
+        "virtual_memory",
+        "memory",
+        "node",
+    ]
     INFO_ATTRIBUTES = []

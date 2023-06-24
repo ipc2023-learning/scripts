@@ -81,7 +81,8 @@ class LearningExperiment(Experiment):
             project.add_scp_step(self, "nsc", "/proj/dfsplan/users/x_jense/ipc2023-learning")
         reportfile = Path(self.eval_dir) / f"{self.name}.html"
         self.add_report(report.IPCLearningReport(attributes=report.IPCLearningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
-        self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
+        if not project.running_on_cluster():
+            self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
 
         self.add_parser(DIR / "learning-parser.py")
         self.add_parser(project.DIR / "runsolver-parser.py")

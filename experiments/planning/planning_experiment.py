@@ -70,7 +70,8 @@ class PlanningExperiment(Experiment):
             project.add_scp_step(self, "nsc", "/proj/dfsplan/users/x_jense/ipc2023-learning")
         reportfile = Path(self.eval_dir) / f"{self.name}.html"
         self.add_report(IPCPlanningReport(attributes=IPCPlanningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
-        self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
+        if not project.running_on_cluster():
+            self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
 
         self.add_parser(DIR / "planning-parser.py")
         self.add_parser(project.DIR / "runsolver-parser.py")
@@ -148,6 +149,19 @@ class IPCPlanningReport(AbsoluteReport):
     DEFAULT_ATTRIBUTES = ["coverage", "cost", "costs", "planner_exit_code", "planner_wall_clock_time",
                           "score", "error", "run_dir", "has_suboptimal_plan", "has_invalid_plans",
                           "cpu_time", "virtual_memory", "wall_clock_time"]
+    ERROR_ATTRIBUTES = [
+        "domain",
+        "problem",
+        "algorithm",
+        "unexplained_errors",
+        "error",
+        "cpu_time",
+        "wall_clock_time",
+        "virtual_memory",
+        "memory",
+        "node",
+    ]
+    INFO_ATTRIBUTES = []
     def __init__(self, **kwargs):
         filters = tools.make_list(kwargs.get("filter", []))
         #filters.append(add_score)
