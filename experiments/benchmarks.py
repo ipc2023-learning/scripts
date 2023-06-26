@@ -25,6 +25,7 @@ def get_learning_benchmarks(test_run):
     if test_run:
         return [
             ("gripper", EXAMPLE_BENCHMARK_DIR / "gripper/training/easy/domain.pddl", EXAMPLE_BENCHMARK_DIR / "gripper/training/easy"),
+            ("visitall", EXAMPLE_BENCHMARK_DIR / "visitall/training/easy/domain.pddl", EXAMPLE_BENCHMARK_DIR / "visitall/training/easy"),
         ]
     else:
         return [
