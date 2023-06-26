@@ -5,11 +5,11 @@ import sys
 from lab.environments import TetralithEnvironment, LocalEnvironment
 
 sys.path.insert(0, "..")
+import benchmarks
 import project
 import submissions
 import tracks
 
-import benchmarks
 import learning_experiment
 
 TRACK = tracks.SINGLE_CORE
@@ -29,12 +29,12 @@ if project.running_on_cluster():
 else:
     TESTRUN = True
     ENVIRONMENT = LocalEnvironment(processes=4)
-    TIME_LIMIT = 60  # seconds
+    TIME_LIMIT = 10  # seconds
     MEMORY_LIMIT = 16 * 1024  # MiB
 
 exp = learning_experiment.LearningExperiment(track=TRACK, time_limit=TIME_LIMIT, memory_limit=MEMORY_LIMIT, environment=ENVIRONMENT)
 exp.add_planners(submissions.get_all_learners())
-for domain, domain_dir in benchmarks.get_benchmarks(TESTRUN):
+for domain, domain_dir in benchmarks.get_learning_benchmarks(TESTRUN):
     exp.add_domain(domain, domain_dir)
 
 project.add_collect_logs_step(exp)

@@ -4,10 +4,10 @@ import shutil
 import subprocess
 
 from downward import suites
+from downward.reports.absolute import AbsoluteReport
 from lab.experiment import Experiment, Run
 
 import project
-import report
 
 DIR = project.DIR / "learning"
 
@@ -80,7 +80,7 @@ class LearningExperiment(Experiment):
             self.add_step("remove-eval-dir", shutil.rmtree, self.eval_dir, ignore_errors=True)
             project.add_scp_step(self, "nsc", "/proj/dfsplan/users/x_jense/ipc2023-learning")
         reportfile = Path(self.eval_dir) / f"{self.name}.html"
-        self.add_report(report.IPCLearningReport(attributes=report.IPCLearningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
+        self.add_report(IPCLearningReport(attributes=IPCLearningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
         if not project.running_on_cluster():
             self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
 
@@ -126,3 +126,23 @@ class LearningExperiment(Experiment):
                 self.add_run(LearningRun(self, planner, tasks, self.time_limit, self.memory_limit))
 
         super().build(**kwargs)
+
+
+class IPCLearningReport(AbsoluteReport):
+    DEFAULT_ATTRIBUTES = ["apptainer_exit_code", "apptainer_wall_clock_time",
+                          "error", "run_dir", "cpu_time",
+                          "virtual_memory", "memory", "wall_clock_time",
+                          "coverage", "all_files_with_dk_prefix", "dk_file"]
+    ERROR_ATTRIBUTES = [
+        "domain",
+        "problem",
+        "algorithm",
+        "unexplained_errors",
+        "error",
+        "cpu_time",
+        "wall_clock_time",
+        "virtual_memory",
+        "memory",
+        "node",
+    ]
+    INFO_ATTRIBUTES = []
