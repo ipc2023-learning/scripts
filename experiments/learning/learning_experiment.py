@@ -88,16 +88,15 @@ class LearningExperiment(Experiment):
         self.add_parser(project.DIR / "runsolver-parser.py")
         self.add_resource("run_apptainer", DIR / "run-apptainer.sh")
 
-    def add_domain(self, domain, domain_dir):
-        if domain in self._tasks:
-            logging.critical(f"Domain {domain} was already added")
-        domain_file = domain_dir / "domain.pddl"
+    def add_domain(self, domain_name, domain_file, domain_dir):
+        if domain_name in self._tasks:
+            logging.critical(f"Domain {domain_name} was already added")
         tasks = []
         for problem_file in sorted(domain_dir.glob("*.pddl")):
             if problem_file.name == "domain.pddl":
                 continue
-            tasks.append(suites.Problem(domain, problem_file.name, problem_file, domain_file))
-        self._tasks[domain] = tasks
+            tasks.append(suites.Problem(domain_name, problem_file.name, problem_file, domain_file))
+        self._tasks[domain_name] = tasks
 
     def add_planners(self, planners):
         for planner in planners:
