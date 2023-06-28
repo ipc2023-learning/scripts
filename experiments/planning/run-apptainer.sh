@@ -20,4 +20,4 @@ if [ -f $PLAN ]; then
     exit 2
 fi
 
-runsolver --cpu-limit ${TIME_LIMIT} --rss-swap-limit ${MEMORY_LIMIT} --delay 5 -w watch.log -v values.log apptainer run -C -H ${PWD} ${IMAGE} ${DK} ${DOMAIN} ${PROBLEM} ${PLAN}
+runsolver --cpu-limit ${TIME_LIMIT} --rss-swap-limit ${MEMORY_LIMIT} --delay 5 -w watch.log -v values.log apptainer run --containall --home ${PWD} ${IMAGE} ${DK} ${DOMAIN} ${PROBLEM} ${PLAN}

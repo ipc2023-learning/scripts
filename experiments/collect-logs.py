@@ -9,7 +9,7 @@ import tarfile
 
 from lab.tools import Properties
 
-MAX_FILE_SIZE = 50 * 1024  # 500 KiB
+MAX_FILE_SIZE = 10 * 1024  # Bytes
 PART_SIZE = MAX_FILE_SIZE // 2
 
 

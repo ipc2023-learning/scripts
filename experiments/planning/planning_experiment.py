@@ -37,7 +37,8 @@ class PlanningRun(Run):
                 "sas_plan",
                 time_limit,
                 memory_limit
-            ]
+            ],
+            hard_stdout_limit=50 * 1024,  # KiB
         )
 
         self.set_property("algorithm", planner.shortname)

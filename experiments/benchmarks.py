@@ -15,7 +15,7 @@ DOMAINS = [
     "miconic",
     "rovers",
     "satellite",
-    #"sokoban",
+    "sokoban",
     "spanner",
     "transport",
 ]
