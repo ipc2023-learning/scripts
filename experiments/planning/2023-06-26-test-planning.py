@@ -16,9 +16,9 @@ TRACK = tracks.SINGLE_CORE
 LOGS_DIR = project.REPO / ".." / "logs"
 TIME_LIMIT = 1800  # seconds
 MEMORY_LIMIT = 8 * 1024  # MiB
+TESTRUN = True
 
 if project.running_on_cluster():
-    TESTRUN = False
     ENVIRONMENT = TetralithEnvironment(
         email="jendrik.seipp@liu.se",
         memory_per_cpu="9G",
@@ -27,7 +27,6 @@ if project.running_on_cluster():
         export=["PATH"],
     )
 else:
-    TESTRUN = True
     ENVIRONMENT = LocalEnvironment(processes=4)
     TIME_LIMIT = 5  # seconds
 
