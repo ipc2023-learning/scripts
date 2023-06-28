@@ -36,18 +36,29 @@ def get_learning_benchmarks(test_run):
 
 def get_planning_benchmarks(test_run):
     benchmarks = []
-    for domain in ["gripper", "visitall"]:
-        tasks = []
-        for level in ["easy", "medium", "hard"]:
-            tasks_dir = EXAMPLE_BENCHMARK_DIR / domain / "testing" / level
-            domain_file = tasks_dir / "domain.pddl"
-            for problem_file in sorted(tasks_dir.glob("*.pddl")):
-                if problem_file.name == "domain.pddl":
-                    continue
-                tasks.append(suites.Problem(domain, f"{level}-{problem_file.name}", problem_file, domain_file))
-        if test_run:
-            tasks = tasks[:1]
-        benchmarks.append((domain, tasks))
+    if test_run:
+        for domain in ["gripper", "visitall"]:
+            tasks = []
+            for level in ["easy", "medium", "hard"]:
+                tasks_dir = EXAMPLE_BENCHMARK_DIR / domain / "testing" / level
+                domain_file = tasks_dir / "domain.pddl"
+                for problem_file in sorted(tasks_dir.glob("*.pddl")):
+                    if problem_file.name == "domain.pddl":
+                        continue
+                    tasks.append(suites.Problem(domain, f"{level}-{problem_file.name}", problem_file, domain_file))
+            #if test_run:
+            #    tasks = tasks[:1]
+            benchmarks.append((domain, tasks))
+    else:
+        for domain in DOMAINS:
+            tasks = []
+            for level in ["easy", "medium", "hard"]:
+                tasks_dir = BENCHMARK_DIR / domain / "testing" / level
+                domain_file = BENCHMARK_DIR / domain / "domain.pddl"
+                for problem_file in sorted(tasks_dir.glob("*.pddl")):
+                    assert problem_file.name != "domain.pddl"
+                    tasks.append(suites.Problem(domain, f"{level}-{problem_file.name}", problem_file, domain_file))
+            benchmarks.append((domain, tasks))
     return benchmarks
 
 
