@@ -48,7 +48,8 @@ class LearningRun(Run):
                 memory_limit,
                 "dk",
                 "{domain}",
-            ] + [f"{{{task_name}}}" for task_name in task_names]
+            ] + [f"{{{task_name}}}" for task_name in task_names],
+            hard_stdout_limit=50 * 1024,  # KiB
         )
         #self.add_command("filter-stderr", [sys.executable, "{filter_stderr}"])
 
