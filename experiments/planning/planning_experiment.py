@@ -7,6 +7,7 @@ import subprocess
 from downward.reports.absolute import AbsoluteReport
 from downward import suites
 from lab.experiment import Experiment, Run
+from lab.reports import Attribute
 from lab import tools
 
 import project
@@ -69,10 +70,16 @@ class PlanningExperiment(Experiment):
         if not project.running_on_cluster():
             self.add_step("remove-eval-dir", shutil.rmtree, self.eval_dir, ignore_errors=True)
             project.add_scp_step(self, "nsc", "/proj/dfsplan/users/x_jense/ipc2023-learning")
+
         reportfile = Path(self.eval_dir) / f"{self.name}.html"
         self.add_report(IPCPlanningReport(attributes=IPCPlanningReport.DEFAULT_ATTRIBUTES), outfile=reportfile)
         if not project.running_on_cluster():
             self.add_step(f"open-{reportfile.name}", subprocess.call, ["xdg-open", reportfile])
+
+        error_reportfile = Path(self.eval_dir) / f"{self.name}-errors.html"
+        self.add_report(IPCPlanningReport(attributes=[Attribute("has_invalid_plans", absolute=True), "run_dir"]), outfile=error_reportfile)
+        if not project.running_on_cluster():
+            self.add_step(f"open-{error_reportfile.name}", subprocess.call, ["xdg-open", error_reportfile])
 
         self.add_parser(DIR / "planning-parser.py")
         self.add_parser(project.DIR / "runsolver-parser.py")
