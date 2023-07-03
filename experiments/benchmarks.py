@@ -34,7 +34,7 @@ def get_learning_benchmarks(test_run):
         ]
 
 
-def get_planning_benchmarks(test_run):
+def get_planning_benchmarks(test_run, one_task_per_domain=False):
     benchmarks = []
     if test_run:
         for domain in ["gripper", "visitall"]:
@@ -57,8 +57,8 @@ def get_planning_benchmarks(test_run):
                 domain_file = BENCHMARK_DIR / domain / "domain.pddl"
                 for problem_file in sorted(tasks_dir.glob("p??.pddl")):
                     tasks.append(suites.Problem(domain, f"{level}-{problem_file.name}", problem_file, domain_file))
-                    #break
-                #break
+            if one_task_per_domain:
+                tasks = tasks[:1]
             benchmarks.append((domain, tasks))
     return benchmarks
 

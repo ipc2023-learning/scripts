@@ -114,10 +114,6 @@ MULTI_CORE_PLANNERS = [
     "muninn.plan.sif",
 ]
 
-NON_LEARNING_PLANNERS = [
-    "fdss_2023_sat.sif",
-]
-
 
 def get_learners(track=None):
     paths = SINGLE_CORE_LEARNERS if track == tracks.SINGLE_CORE else MULTI_CORE_LEARNERS
@@ -130,10 +126,6 @@ def get_all_learners():
 
 def get_all_planners():
     return [IPCPlanner(IMAGES_DIR / path) for path in SINGLE_CORE_PLANNERS + MULTI_CORE_PLANNERS]
-
-
-def get_non_learning_planners():
-    return [IPCPlanner(IMAGES_DIR / path) for path in NON_LEARNING_PLANNERS]
 
 
 def get_participating(track=None):

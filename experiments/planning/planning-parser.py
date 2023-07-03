@@ -44,6 +44,12 @@ def parse_plans(content, props):
 def main():
     print("Running planning parser")
     parser = Parser()
+    parser.add_pattern(
+        "start_time",
+        r"Start time: (.+)\n",
+        type=str,
+        required=True,
+    )
     parser.add_function(parse_plans)
     parser.parse()
 

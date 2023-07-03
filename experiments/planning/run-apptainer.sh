@@ -20,4 +20,5 @@ if [ -f $PLAN ]; then
     exit 2
 fi
 
+echo "Start time: $(date +%Y-%m-%dT%H:%M:%S.%3N)"
 runsolver --cpu-limit ${TIME_LIMIT} --rss-swap-limit ${MEMORY_LIMIT} --delay 5 -w watch.log -v values.log apptainer run --containall --home ${PWD} ${IMAGE} ${DK} ${DOMAIN} ${PROBLEM} ${PLAN}
