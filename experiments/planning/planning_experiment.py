@@ -112,6 +112,8 @@ class PlanningExperiment(Experiment):
         self.set_property("suite", serialized_suites)
         self.set_property("images", list(self._planners.keys()))
 
+        logging.info(f"Planners: {len(self._planners)}")
+        logging.info(f"Tasks: {[len(tasks) for domain, tasks in sorted(self._tasks.items())]}")
         for planner in self._planners.values():
             for domain, tasks in sorted(self._tasks.items()):
                 dk_file = (self.logs_dir / planner.shortname.replace("_plan", "_learn") / self.learning_exp_name / "domain-knowledge" / f"{domain}.dk").resolve()

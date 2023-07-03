@@ -55,9 +55,10 @@ def get_planning_benchmarks(test_run):
             for level in ["easy", "medium", "hard"]:
                 tasks_dir = BENCHMARK_DIR / domain / "testing" / level
                 domain_file = BENCHMARK_DIR / domain / "domain.pddl"
-                for problem_file in sorted(tasks_dir.glob("*.pddl")):
-                    assert problem_file.name != "domain.pddl"
+                for problem_file in sorted(tasks_dir.glob("p??.pddl")):
                     tasks.append(suites.Problem(domain, f"{level}-{problem_file.name}", problem_file, domain_file))
+                    #break
+                #break
             benchmarks.append((domain, tasks))
     return benchmarks
 
