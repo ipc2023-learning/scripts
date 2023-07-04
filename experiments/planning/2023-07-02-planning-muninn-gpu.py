@@ -17,7 +17,7 @@ LOGS_DIR = project.REPO / ".." / "logs"
 TIME_LIMIT = 1800  # seconds
 MEMORY_LIMIT = 8 * 1024  # MiB
 TESTRUN = False
-ONE_TASK_PER_DOMAIN = True
+ONE_TASK_PER_DOMAIN = False
 
 NAMES = [
     "muninn.plan.sif",
@@ -27,9 +27,9 @@ PLANNERS = [submissions.IPCPlanner(submissions.IMAGES_DIR / name) for name in NA
 if project.running_on_cluster():
     ENVIRONMENT = TetralithEnvironment(
         email="jendrik.seipp@liu.se",
-        memory_per_cpu="9G",
+        memory_per_cpu="2G",
         cpus_per_task=32,
-        time_limit_per_task="23:00:00",
+        time_limit_per_task="1:00:00",
         export=["PATH"],
         extra_options="""\
 #SBATCH --account=naiss2023-5-236
