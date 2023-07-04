@@ -37,7 +37,7 @@ def parse_plans(content, props):
     print(f"Start time: {start_time}")
     props["costs"] = []
     props["plan_times"] = []
-    for plan in Path(".").glob("sas_plan*"):
+    for plan in sorted(Path(".").glob("sas_plan*")):
         ctime = datetime.datetime.fromtimestamp(plan.stat().st_ctime)
         plan_time = ctime - start_time
         props["costs"].append(validate_plan("domain.pddl", "problem.pddl", str(plan)))

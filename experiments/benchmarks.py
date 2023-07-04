@@ -73,7 +73,6 @@ for filename in ["upper_bounds.json", "upper_bounds_from_ipc_planners.json"]:
         for task, bound in sorted(bounds.items()):
             if task not in BEST_KNOWN_UPPER_BOUNDS or (bound is not None and bound < BEST_KNOWN_UPPER_BOUNDS[task]):
                 BEST_KNOWN_UPPER_BOUNDS[task] = bound
-print(BEST_KNOWN_UPPER_BOUNDS)
 
 
 def get_best_upper_bound(domain, problem):

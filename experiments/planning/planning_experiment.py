@@ -132,8 +132,8 @@ def add_scores(run):
         run["quality_score"] = 1. if best_upper_bound is None else best_upper_bound / run["cost"]
 
         time_limit = run["time_limit"]
-        time = run["cpu_time"]
-        run["agile_score"] = 1 if time <= 1 else 1 - math.log(time) / math.log(time_limit)
+        time = run["time_for_first_plan"]
+        run["agile_score"] = 1. if time <= 1 else 1 - (math.log(time) / math.log(time_limit))
     return run
 
 
@@ -141,8 +141,8 @@ class IPCPlanningReport(AbsoluteReport):
     DEFAULT_ATTRIBUTES = ["coverage", "cost", "costs", "planner_exit_code", "planner_wall_clock_time",
                           "score", "error", "run_dir", "has_suboptimal_plan", "has_invalid_plans",
                           "cpu_time", "virtual_memory", "wall_clock_time",
-                          "time_for_first_plan", "plan_times", "agile_score",
-                          "quality_score"]
+                          "time_for_first_plan", "plan_times", Attribute("agile_score", absolute=True, min_wins=False),
+                          Attribute("quality_score", absolute=True, min_wins=False)]
     ERROR_ATTRIBUTES = [
         "domain",
         "problem",
