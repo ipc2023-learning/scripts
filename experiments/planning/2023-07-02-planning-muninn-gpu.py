@@ -30,11 +30,11 @@ if project.running_on_cluster():
         email="jendrik.seipp@liu.se",
         memory_per_cpu="2G",
         cpus_per_task=32,
-        time_limit_per_task="1:00:00",
+        time_limit_per_task="23:00:00",
         export=["PATH"],
-        extra_options="""\
+        extra_options=f"""\
 #SBATCH --account=naiss2023-5-236
-#SBATCH --ntasks 900
+#SBATCH --ntasks {TetralithEnvironment.MAX_TASKS}
 #SBATCH --gpus-per-task=1
 """,
     )
