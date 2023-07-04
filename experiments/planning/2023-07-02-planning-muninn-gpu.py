@@ -25,6 +25,7 @@ NAMES = [
 PLANNERS = [submissions.IPCPlanner(submissions.IMAGES_DIR / name) for name in NAMES]
 
 if project.running_on_cluster():
+    TetralithEnvironment.MAX_TASKS = 100  # The max value for ntasks is between 150 and 180 on Tetralith.
     ENVIRONMENT = TetralithEnvironment(
         email="jendrik.seipp@liu.se",
         memory_per_cpu="2G",
