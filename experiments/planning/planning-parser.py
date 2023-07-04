@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import datetime
 from pathlib import Path
 import subprocess
 import sys
@@ -31,14 +32,22 @@ def validate_plan(domain, problem, plan):
 
 
 def parse_plans(content, props):
+    # Convert start time with format "2023-07-04T11:41:14.942" to datetime object.
+    start_time = datetime.datetime.strptime(props["start_time"], "%Y-%m-%dT%H:%M:%S.%f")
+    print(f"Start time: {start_time}")
     props["costs"] = []
+    props["plan_times"] = []
     for plan in Path(".").glob("sas_plan*"):
+        ctime = datetime.datetime.fromtimestamp(plan.stat().st_ctime)
+        plan_time = ctime - start_time
         props["costs"].append(validate_plan("domain.pddl", "problem.pddl", str(plan)))
+        props["plan_times"].append(round(plan_time.total_seconds(), 2))
 
     props["has_invalid_plans"] = int(INVALID_PLAN in props["costs"])
     props["coverage"] = int(len(props["costs"]) > 0 and not props["has_invalid_plans"])
     if props["coverage"]:
         props["cost"] = min(props["costs"])
+        props["time_for_first_plan"] = min(props["plan_times"])
 
 
 def main():

@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from downward import suites
@@ -6,6 +7,7 @@ DIR = Path(__file__).resolve().parent
 REPO = DIR.parent
 EXAMPLE_BENCHMARK_DIR = REPO / "../example-tasks/"
 BENCHMARK_DIR = REPO / "../benchmarks/"
+BOUNDS_DIR = BENCHMARK_DIR / "solutions"
 
 DOMAINS = [
     "blocksworld",
@@ -63,11 +65,17 @@ def get_planning_benchmarks(test_run, one_task_per_domain=False):
     return benchmarks
 
 
-BEST_KNOWN_BOUNDS = {
-    "gripper": {
-        "p01.pddl": (None, None),
-    },
-}
+BEST_KNOWN_UPPER_BOUNDS = {}
+for filename in ["upper_bounds.json", "upper_bounds_from_ipc_planners.json"]:
+    with open(BOUNDS_DIR / filename) as f:
+        bounds = json.load(f)
+        # Use minimum upper bound over all files.
+        for task, bound in sorted(bounds.items()):
+            if task not in BEST_KNOWN_UPPER_BOUNDS or (bound is not None and bound < BEST_KNOWN_UPPER_BOUNDS[task]):
+                BEST_KNOWN_UPPER_BOUNDS[task] = bound
+print(BEST_KNOWN_UPPER_BOUNDS)
 
-def get_best_bounds(domain, problem):
-    return BEST_KNOWN_BOUNDS.get(domain, {}).get(problem, (0, float("inf")))
+
+def get_best_upper_bound(domain, problem):
+    task = f"{domain}/testing/{problem.replace('-', '/')}"
+    return BEST_KNOWN_UPPER_BOUNDS[task]
