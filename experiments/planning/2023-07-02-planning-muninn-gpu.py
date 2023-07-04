@@ -28,13 +28,12 @@ if project.running_on_cluster():
     ENVIRONMENT = TetralithEnvironment(
         email="jendrik.seipp@liu.se",
         memory_per_cpu="9G",
-        cpus_per_task=1,
+        cpus_per_task=32,
         time_limit_per_task="23:00:00",
         export=["PATH"],
         extra_options="""\
 #SBATCH --account=naiss2023-5-236
-#SBATCH -n 1
-#SBATCH -c 32
+#SBATCH --numtasks 900
 #SBATCH --gpus-per-task=1
 """,
     )
