@@ -33,7 +33,7 @@ if project.running_on_cluster():
         export=["PATH"],
         extra_options="""\
 #SBATCH --account=naiss2023-5-236
-#SBATCH --numtasks 900
+#SBATCH --ntasks 900
 #SBATCH --gpus-per-task=1
 """,
     )
