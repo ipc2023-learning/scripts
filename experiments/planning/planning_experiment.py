@@ -60,7 +60,7 @@ class PlanningExperiment(Experiment):
         self._planners = {}
         self.track = track
         self.logs_dir = logs_dir
-        self.learning_exp_name = self.name.replace("planning", "learning").replace("-asnets", "")
+        self.learning_exp_name = self.name.replace("planning", "learning").replace("-asnets", "").replace("-muninn-gpu", "")
         self.time_limit = time_limit
         self.memory_limit = memory_limit
 
