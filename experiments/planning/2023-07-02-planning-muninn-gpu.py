@@ -25,12 +25,12 @@ NAMES = [
 PLANNERS = [submissions.IPCPlanner(submissions.IMAGES_DIR / name) for name in NAMES]
 
 if project.running_on_cluster():
-    TetralithEnvironment.MAX_TASKS = 100  # The max value for ntasks is between 150 and 180 on Tetralith.
+    TetralithEnvironment.MAX_TASKS = 150  # The max value for ntasks is between 150 and 180 on Tetralith.
     ENVIRONMENT = TetralithEnvironment(
         email="jendrik.seipp@liu.se",
-        memory_per_cpu="2G",
-        cpus_per_task=32,
-        time_limit_per_task="23:00:00",
+        memory_per_cpu="4G",
+        cpus_per_task=2,
+        time_limit_per_task="4:00:00",  # 900 runs / 150 shards => 6 runs per shard => 3 hours per shard
         export=["PATH"],
         extra_options=f"""\
 #SBATCH --account=naiss2023-5-236
