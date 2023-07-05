@@ -25,7 +25,8 @@ NAMES = [
 PLANNERS = [submissions.IPCPlanner(submissions.IMAGES_DIR / name) for name in NAMES]
 
 if project.running_on_cluster():
-    TetralithEnvironment.MAX_TASKS = 100  # The max value for ntasks is between 150 and 180 on Tetralith.
+    # The max value for ntasks is between 150 and 180 on Tetralith. So we group multiple runs into one Slurm task.
+    TetralithEnvironment.MAX_TASKS = 100
     ENVIRONMENT = TetralithEnvironment(
         email="jendrik.seipp@liu.se",
         memory_per_cpu="4G",
@@ -34,7 +35,8 @@ if project.running_on_cluster():
         export=["PATH"],
         extra_options=f"""\
 #SBATCH --account=naiss2023-5-236
-#SBATCH --ntasks {TetralithEnvironment.MAX_TASKS}
+#SBATCH --ntasks=1
+#SBATCH --nodes=1
 #SBATCH --gpus-per-task=1
 """,
     )
