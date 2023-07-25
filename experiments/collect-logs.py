@@ -41,7 +41,7 @@ def sort_run_dir(run_dir, logs_dir):
     target_dk_dir = target_root_dir / "domain-knowledge"
     target_run_dir = target_root_dir / run_dir.parent.name / run_dir.name
     target_run_dir.mkdir(parents=True, exist_ok=True)
-    uncompressed_files = {"properties", "static-properties", "driver.log", "run", "run.err", "run.log", "values.log"}
+    uncompressed_files = {"properties", "static-properties", "driver.log", "run", "values.log"}
     compressed_files = []
 
     for root, _, files in os.walk(run_dir):

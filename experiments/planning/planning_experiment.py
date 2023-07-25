@@ -141,9 +141,9 @@ def add_scores(run):
 
 
 class IPCPlanningReport(AbsoluteReport):
-    DEFAULT_ATTRIBUTES = ["coverage", "cost", "costs", "planner_exit_code", "planner_wall_clock_time",
-                          "score", "error", "run_dir", "has_suboptimal_plan", Attribute("has_invalid_plans", absolute=True),
-                          "cpu_time", "virtual_memory", "wall_clock_time",
+    DEFAULT_ATTRIBUTES = ["coverage", "cost", "costs", "apptainer_wall_clock_time",
+                          "error", "run_dir", Attribute("has_invalid_plans", absolute=True),
+                          "cpu_time", "memory", "virtual_memory", "wall_clock_time",
                           "time_for_first_plan", "plan_times", Attribute("agile_score", absolute=True, min_wins=False),
                           Attribute("quality_score", absolute=True, min_wins=False)]
     ERROR_ATTRIBUTES = [
